@@ -3,31 +3,22 @@ package main
 import "fmt"
 
 func main() {
-	var sample string = "123"
+	const foodCompany string = "Shri Annapoorneshwari Bhojana"
+	const totalCoupons uint = 200
+	var remainingCoupons uint = 200
 
-	sample2 := "234"
+	fmt.Printf("Welcome to %v coupon booking.", foodCompany)
+	fmt.Printf("\nWe have %v coupons left out of %v\n", remainingCoupons, totalCoupons)
 
-	var input string
+	var name string
+	var tickets uint
+	fmt.Println("Please enter name:")
+	fmt.Scan(&name)
 
-	const number int8 = 1
+	fmt.Println("Please enter number of tickets:")
+	fmt.Scan(&tickets)
 
-	var number2 uint8 = 255
+	remainingCoupons = remainingCoupons - tickets
 
-	fmt.Printf("Hello World, %v, %v, %v, %v", sample, number, sample2, number2)
-
-	fmt.Println("")
-
-	fmt.Printf("The type of number is %T", number)
-
-	fmt.Println("")
-
-	fmt.Scan(&input)
-
-	fmt.Println("The input is: ")
-
-	fmt.Println(input)
-
-	fmt.Println("The address of input is: ")
-
-	fmt.Println(&input)
+	fmt.Printf("\nCongratulations %v, your tickets are booked. There are %v tickets remaining.\n", name, remainingCoupons)
 }
