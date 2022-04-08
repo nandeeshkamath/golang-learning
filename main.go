@@ -5,49 +5,84 @@ import (
 	"strings"
 )
 
-func main() {
-	const foodCompany string = "Shri Annapoorneshwari Bhojana"
-	const totalCoupons uint = 200
-	var remainingCoupons uint = 200
-	var bookings []string
+const foodCompany string = "Shri Annapoorneshwari Bhojana"
+const totalCoupons uint = 200
 
-	fmt.Printf("Welcome to %v coupon booking.", foodCompany)
-	fmt.Printf("\nWe have %v coupons left out of %v\n", remainingCoupons, totalCoupons)
+var remainingCoupons uint = 200
+var bookings []string
+
+func main() {
+
+	greetUsers()
 
 	for {
-		var firstName string
-		var secondName string
-		var tickets uint
-		fmt.Println("Please enter first name:")
-		fmt.Scan(&firstName)
-		fmt.Println("Please enter second name:")
-		fmt.Scan(&secondName)
 
-		fmt.Println("Please enter number of tickets:")
-		fmt.Scan(&tickets)
+		firstName, secondName, email, tickets := getUserInput()
 
-		if remainingCoupons < tickets {
-			fmt.Printf("You cannot book %v coupons when only %v coupons are available. \n", tickets, remainingCoupons)
-			break
-		}
+		isValidName, isValidEmail, isValidTicket := validateUserInput(firstName, secondName, email, tickets)
 
-		remainingCoupons = remainingCoupons - tickets
-		bookings = append(bookings, firstName+" "+secondName)
+		if isValidName && isValidEmail && isValidTicket {
 
-		firstNames := []string{}
-		for _, booking := range bookings {
-			var name = strings.Fields(booking)
-			firstNames = append(firstNames, name[0])
-		}
+			bookTickets(firstName, secondName, tickets)
 
-		fmt.Printf("Congratulations %v, your tickets are booked. There are %v tickets remaining.\n", firstName, remainingCoupons)
+			firstNames := getFirstNames()
 
-		fmt.Printf("These are the bookings: %v \n", firstNames)
+			fmt.Printf("Congratulations %v, your tickets are booked. There are %v tickets remaining.\n", firstName, remainingCoupons)
 
-		if remainingCoupons == 0 {
-			fmt.Println("We have distributed all the coupons for today. Please come back tomorrow.")
-			break
+			fmt.Printf("These are the bookings: %v \n", firstNames)
+
+			if remainingCoupons == 0 {
+				fmt.Println("We have distributed all the coupons for today. Please come back tomorrow.")
+				break
+			}
+		} else {
+			fmt.Println("Incorrect input")
 		}
 	}
 
+}
+
+func greetUsers() {
+	fmt.Printf("Welcome to %v coupon booking.", foodCompany)
+	fmt.Printf("\nWe have %v coupons left out of %v\n", remainingCoupons, totalCoupons)
+}
+
+func getUserInput() (string, string, string, uint) {
+	var firstName string
+	var secondName string
+	var email string
+	var tickets uint
+	fmt.Println("Please enter first name:")
+	fmt.Scan(&firstName)
+	fmt.Println("Please enter second name:")
+	fmt.Scan(&secondName)
+
+	fmt.Println("Please enter your email")
+	fmt.Scan(&email)
+
+	fmt.Println("Please enter number of tickets:")
+	fmt.Scan(&tickets)
+
+	return firstName, secondName, email, tickets
+}
+
+func validateUserInput(firstName string, secondName string, email string, tickets uint) (bool, bool, bool) {
+	isValidName := len(firstName) > 2 && len(secondName) > 2
+	isValidEmail := strings.Contains(email, "@")
+	isValidTicket := tickets > 0 && tickets <= remainingCoupons
+	return isValidName, isValidEmail, isValidTicket
+}
+
+func bookTickets(firstName string, secondName string, tickets uint) {
+	remainingCoupons = remainingCoupons - tickets
+	bookings = append(bookings, firstName+" "+secondName)
+}
+
+func getFirstNames() []string {
+	firstNames := []string{}
+	for _, booking := range bookings {
+		var name = strings.Fields(booking)
+		firstNames = append(firstNames, name[0])
+	}
+	return firstNames
 }
