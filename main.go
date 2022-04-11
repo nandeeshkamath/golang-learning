@@ -3,14 +3,20 @@ package main
 import (
 	"fmt"
 	"golang-learning/helper"
-	"strings"
 )
 
 const foodCompany string = "Shri Annapoorneshwari Bhojana"
 const totalCoupons uint = 200
 
 var remainingCoupons uint = 200
-var bookings []string
+var bookings = make([]UserData, 0)
+
+type UserData struct {
+	firstName  string
+	secondName string
+	email      string
+	tickets    uint
+}
 
 func main() {
 
@@ -24,13 +30,14 @@ func main() {
 
 		if isValidName && isValidEmail && isValidTicket {
 
-			bookTickets(firstName, secondName, tickets)
+			bookTickets(firstName, secondName, email, tickets)
 
 			firstNames := getFirstNames()
 
 			fmt.Printf("Congratulations %v, your tickets are booked. There are %v tickets remaining.\n", firstName, remainingCoupons)
 
 			fmt.Printf("These are the bookings: %v \n", firstNames)
+			fmt.Printf("These are the complete bookings: %v \n", bookings)
 
 			if remainingCoupons == 0 {
 				fmt.Println("We have distributed all the coupons for today. Please come back tomorrow.")
@@ -67,16 +74,21 @@ func getUserInput() (string, string, string, uint) {
 	return firstName, secondName, email, tickets
 }
 
-func bookTickets(firstName string, secondName string, tickets uint) {
+func bookTickets(firstName string, secondName string, email string, tickets uint) {
 	remainingCoupons = remainingCoupons - tickets
-	bookings = append(bookings, firstName+" "+secondName)
+	var userData = UserData{
+		firstName:  firstName,
+		secondName: secondName,
+		email:      email,
+		tickets:    tickets,
+	}
+	bookings = append(bookings, userData)
 }
 
 func getFirstNames() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
-		var name = strings.Fields(booking)
-		firstNames = append(firstNames, name[0])
+		firstNames = append(firstNames, booking.firstName)
 	}
 	return firstNames
 }
