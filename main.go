@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"golang-learning/helper"
+	"time"
 )
 
 const foodCompany string = "Shri Annapoorneshwari Bhojana"
@@ -31,6 +32,7 @@ func main() {
 		if isValidName && isValidEmail && isValidTicket {
 
 			bookTickets(firstName, secondName, email, tickets)
+			go sendTickets(firstName, secondName, email, tickets)
 
 			firstNames := getFirstNames()
 
@@ -83,6 +85,14 @@ func bookTickets(firstName string, secondName string, email string, tickets uint
 		tickets:    tickets,
 	}
 	bookings = append(bookings, userData)
+}
+
+func sendTickets(firstName string, secondName string, email string, tickets uint) {
+	time.Sleep(10 * time.Second)
+	var msg = fmt.Sprintf("%v tickets sending to %v %v", tickets, firstName, secondName)
+	fmt.Printf("###################################################\n")
+	fmt.Printf("Sending tickets... \n %v \n to email %v\n", msg, email)
+	fmt.Printf("###################################################\n")
 }
 
 func getFirstNames() []string {
