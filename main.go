@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"golang-learning/helper"
 	"strings"
 )
 
@@ -19,7 +20,7 @@ func main() {
 
 		firstName, secondName, email, tickets := getUserInput()
 
-		isValidName, isValidEmail, isValidTicket := validateUserInput(firstName, secondName, email, tickets)
+		isValidName, isValidEmail, isValidTicket := helper.ValidateUserInput(remainingCoupons, firstName, secondName, email, tickets)
 
 		if isValidName && isValidEmail && isValidTicket {
 
@@ -64,13 +65,6 @@ func getUserInput() (string, string, string, uint) {
 	fmt.Scan(&tickets)
 
 	return firstName, secondName, email, tickets
-}
-
-func validateUserInput(firstName string, secondName string, email string, tickets uint) (bool, bool, bool) {
-	isValidName := len(firstName) > 2 && len(secondName) > 2
-	isValidEmail := strings.Contains(email, "@")
-	isValidTicket := tickets > 0 && tickets <= remainingCoupons
-	return isValidName, isValidEmail, isValidTicket
 }
 
 func bookTickets(firstName string, secondName string, tickets uint) {
