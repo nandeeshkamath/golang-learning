@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"golang-learning/helper"
+	"sync"
 	"time"
 )
 
@@ -11,6 +12,7 @@ const totalCoupons uint = 200
 
 var remainingCoupons uint = 200
 var bookings = make([]UserData, 0)
+var wg = sync.WaitGroup{}
 
 type UserData struct {
 	firstName  string
@@ -23,32 +25,35 @@ func main() {
 
 	greetUsers()
 
-	for {
+	// for {
 
-		firstName, secondName, email, tickets := getUserInput()
+	firstName, secondName, email, tickets := getUserInput()
 
-		isValidName, isValidEmail, isValidTicket := helper.ValidateUserInput(remainingCoupons, firstName, secondName, email, tickets)
+	isValidName, isValidEmail, isValidTicket := helper.ValidateUserInput(remainingCoupons, firstName, secondName, email, tickets)
 
-		if isValidName && isValidEmail && isValidTicket {
+	if isValidName && isValidEmail && isValidTicket {
 
-			bookTickets(firstName, secondName, email, tickets)
-			go sendTickets(firstName, secondName, email, tickets)
+		bookTickets(firstName, secondName, email, tickets)
 
-			firstNames := getFirstNames()
+		wg.Add(1)
+		go sendTickets(firstName, secondName, email, tickets)
 
-			fmt.Printf("Congratulations %v, your tickets are booked. There are %v tickets remaining.\n", firstName, remainingCoupons)
+		firstNames := getFirstNames()
 
-			fmt.Printf("These are the bookings: %v \n", firstNames)
-			fmt.Printf("These are the complete bookings: %v \n", bookings)
+		fmt.Printf("Congratulations %v, your tickets are booked. There are %v tickets remaining.\n", firstName, remainingCoupons)
 
-			if remainingCoupons == 0 {
-				fmt.Println("We have distributed all the coupons for today. Please come back tomorrow.")
-				break
-			}
-		} else {
-			fmt.Println("Incorrect input")
+		fmt.Printf("These are the bookings: %v \n", firstNames)
+		fmt.Printf("These are the complete bookings: %v \n", bookings)
+
+		if remainingCoupons == 0 {
+			fmt.Println("We have distributed all the coupons for today. Please come back tomorrow.")
+			// break
 		}
+	} else {
+		fmt.Println("Incorrect input")
 	}
+	// }
+	wg.Wait()
 
 }
 
@@ -93,6 +98,7 @@ func sendTickets(firstName string, secondName string, email string, tickets uint
 	fmt.Printf("###################################################\n")
 	fmt.Printf("Sending tickets... \n %v \n to email %v\n", msg, email)
 	fmt.Printf("###################################################\n")
+	wg.Done()
 }
 
 func getFirstNames() []string {
